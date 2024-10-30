@@ -1,0 +1,6 @@
+[web_servers]
+10.160.11.102 ansible_user=administrator ansible_become=yes ansible_become_pass=D630@bynet
+10.160.11.103 ansible_user=administrator ansible_become=yes ansible_become_pass=D630@bynet
+
+[db_servers]
+10.160.11.104 ansible_user=administrator ansible_become=yes ansible_become_pass=D630@bynet
