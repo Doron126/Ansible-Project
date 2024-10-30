@@ -1,0 +1,7 @@
+
+- hosts: db_servers
+  become: true
+  roles:
+    - geerlingguy.mysql
+    - geerlingguy.ntp
+    - weareinteractive.apt
