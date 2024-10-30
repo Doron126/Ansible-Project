@@ -2,6 +2,7 @@
 ## **Overview**
 This project contains Ansible playbooks to automate the setup and configuration of a web server and a database server.
 It’s designed for a test environment and includes roles for installing, configuring, and managing essential services.
+It's also include cron jobs to run once a week for ongoing maintance.
 
 ## **Thecnologies Used**
 * Ansible
@@ -11,28 +12,43 @@ It’s designed for a test environment and includes roles for installing, config
 ## **Instructions**
 1. Set up a debian os machine.
    
-2. Set up Ansible:
-   "sudo apt update"
-   "sudo apt install ansible -y"
+2. Set up Ansible and Python (Ansible is a Framework uses python):
+     "sudo apt update"
+     "sudo apt install python3 -y"
+     "sudo apt install ansible -y"
 
-4. Create an inventory file:
-   "sudo nano /etc/ansible/hosts"
-   structure
+4. Create an inventory file using the hosts file in the repository
+   The inventory file path is pointed in etc/ansible/ansible.cfg
 
-6. Create a directory in the Ubuntu server and create there the files added to the project (app.py, requirements.txt, Dockerfile)
+5. Create a folder for the playbooks and place the playbooks attached to the repository.
 
-7. Create a GitHub repository and push your code, from the directory you created in Ubuntu. type:
-   "git init"
-   "git add ."
-   git commit -m "Initial commit"
-   "git remote add origin 'GitHub_repository_URL'"
-   "git push -u origin main"
+6. Create the machines of the hosts file and configure them:
+    * Configure the netplan and use the correct static ip according to the hosts file
+    * Install openssh, enable and start the ssh:
+      "sudo apt update"
+      "sudo apt install openssh-server -y"
+      "sudo systemctl enable ssh"
+      "sudo systemctl start ssh"
+    * On the Ansible machine configure SSH key:
+      "ssh-keygen -t rsa -b 4096"
+      "ssh-copy-id username@vm-ip-address"
+    * Install Python:
+      "sudo apt install python3 -y"
+     
 
-8. Install the Jenkins plugins and configure the pipeline:
-   Connect to Jenkins on port 8080 and go to Manage Jenkins > Plugins.
-   Install "Git" and "Docker Pipeline" plugins.
-   Click on "+ New Item" and then "Pipeline".
-   When configuring the pipeline check "GitHub project" and enter the project URL.
-   Choose "Pipeline script from SCM" and then "Git" as the SCM with the repository URL, click Save.
+7. Install the roles from Ansible Galaxy:
+    "ansible-galaxy install geerlingguy.ntp"
+    "ansible-galaxy install geerlingguy.apache"
+    "ansible-galaxy install geerlingguy.mysql"
+    "ansible-galaxy install weareinteractive.apt"
 
-9. Run the job with "Builed Now" and check the results, you should see the app in port 5000.
+9. Create and configure the cron jobs:
+    "crontab -e"
+    inside it add the jobs:
+     "0 0 * * 0 /usr/bin/ansible-playbook -i /path/to/inventory /path/to/web_server.yaml"
+     "0 0 * * 0 /usr/bin/ansible-playbook -i /path/to/inventory /path/to/db_server.yaml"
+
+10. Test the playbooks by running them manually, insde the folder where the playbooks at run:
+     "/usr/bin/ansible-playbook -i /path/to/inventory /path/to/web_server.yaml"
+     "/usr/bin/ansible-playbook -i /path/to/inventory /path/to/db_server.yaml"
+
